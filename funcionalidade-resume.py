@@ -1,7 +1,8 @@
 import google.generativeai as genai
 import os
 import gradio as gr
-# import pdb
+from automatizando_home import set_light_values, intruction_alert
+import pdb
 import time
 
 # ===============>
@@ -11,19 +12,34 @@ os.environ["GEMINI_API_KEY"]  # trazendo a chave
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
-model = genai.GenerativeModel('gemini-1.5-flash', system_instruction="""Criação
-    e melhoria de curriculo.""")
-chat = model.start_chat()
+initial_prompt = (
+    "chat, você é Coach de Carreira ajudará ajustar currículo"
+    "Caso aja algum anexo verificar a melhor edição currícular"
+    "Área de especialização para melhorar starcks do currículo"
+    )
+
+model = genai.GenerativeModel(
+            model_name='gemini-1.5-flash',
+            system_instruction=initial_prompt,
+            tools=[set_light_values, intruction_alert],
+    )
+chat = model.start_chat(enable_automatic_function_calling=True)
 
 # De acordo com exercicio é quebra o problema em partes
 
 
 def prompt_chat(prompt):
-    # função que captura o texto e anexo
-    text = [prompt["text"]]
-    uploader_file = uploads_files(prompt)  # função do anexo
-    text.extend(uploader_file)  # tratando o array
-    return text
+    try:
+        text = [prompt["text"]]
+        up_files = uploads_files(prompt)  # função do anexo
+        if not isinstance(up_files, (list, tuple)):
+            raise TypeError("up_files não é uma lista ou tupla")
+
+        text.extend(up_files)
+        return text
+    except Exception as err:
+        print(err)
+        return []
 
 # CARREGANDO IMAGEM
 
@@ -47,39 +63,32 @@ def uploads_files(arquivs_files):  # função do anexo
         for file_path in arquivs_files['files']:
             load_files_path = genai.upload_file(path=file_path["path"])
             while load_files_path.state.name == "PROCESSING":
-                time.sleep(4)
+                time.sleep(6)
                 uploader_file = genai.get_file(load_files_path.name)
             uploader_file.append(load_files_path)
     return uploader_file
 
 
 def start_chat(prompt, _history):
+    while prompt is None:
+        pdb.set_trace()
+        return chat.send_message("Precisa de ajuda com currículo?")
     prompt = prompt_chat(prompt)
     try:
         response = chat.send_message(prompt)
-
+        return response.text
     except IndentationError as e:
         print(e)
         response = f"Não entendi o que você falou, pode tentar novamente? {e}"
         # pdb.set_trace()
-        #     if file_path['mime_type'] in ["image/jpg", "image/png",
-        # "image/gif"]:
-        #         capture_file = file_path["path"]
-        #         uploader_file.append(load_files_path)
-        #     elif file_path['mime_type'] in ["text/plain", "application/pdf",
-        #  "application/msword"]:
-        #         capture_file = file_path["path"]
-        #         load_files_path = genai.upload_file(path=capture_file)
-        #         uploader_file.append(load_files_path)
-        # text.extend(uploader_file)
-    return response.text
+    return prompt_chat(prompt)
 
     response = chat.send_message()
 
 
 chat_interface = gr.ChatInterface(
     fn=start_chat,
-    title="Intentificado de melhoria do curriculo",
+    title="Criação e ajustes de currículos",
     description="Atua como um analisador de curriculo.",
     multimodal=True,  # habilita o suporte a multimodal
     # retry_btn=None,  # desabilita o botão de tentar novamente
