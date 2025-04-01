@@ -1,8 +1,8 @@
 import google.generativeai as genai
 import os
 import gradio as gr
-from automatizando_home import set_light_values, intruction_alert
-import pdb
+from automatizando_home import set_light_values, criador_peticao
+# import pdb
 import time
 
 # ===============>
@@ -13,29 +13,39 @@ os.environ["GEMINI_API_KEY"]  # trazendo a chave
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 initial_prompt = (
-    "chat, você é Coach de Carreira ajudará ajustar currículo"
-    "Caso aja algum anexo verificar a melhor edição currícular"
-    "Área de especialização para melhorar starcks do currículo"
+    """Você é um advogado especializado em direito civil e penal.
+      Responda com precisão às perguntas jurídicas."""
+    "Você é um assistente virtual de advogado e sua função é ajudar."
+    "Por favor toda pergunta relacionada a direito advogacia"
+    "chame as funções preparadas para as respostas"
     )
 
 model = genai.GenerativeModel(
             model_name='gemini-1.5-flash',
             system_instruction=initial_prompt,
-            tools=[set_light_values, intruction_alert],
+            tools=[set_light_values, criador_peticao],
     )
-chat = model.start_chat(enable_automatic_function_calling=True)
+chat = model.start_chat(
+    history=[{
+                "role": "system",
+                "parts": [{"text": "Você é um advogado"}]
+            }],
+    enable_automatic_function_calling=True,
+    )
 
 # De acordo com exercicio é quebra o problema em partes
 
 
 def prompt_chat(prompt):
     try:
-        text = [prompt["text"]]
-        up_files = uploads_files(prompt)  # função do anexo
+        text = [prompt.get("text", "")]
+        up_files = uploads_files(prompt) or []  # função do anexo
+
         if not isinstance(up_files, (list, tuple)):
             raise TypeError("up_files não é uma lista ou tupla")
 
         text.extend(up_files)
+        # pdb.set_trace()
         return text
     except Exception as err:
         print(err)
@@ -70,18 +80,18 @@ def uploads_files(arquivs_files):  # função do anexo
 
 
 def start_chat(prompt, _history):
-    while prompt is None:
-        pdb.set_trace()
-        return chat.send_message("Precisa de ajuda com currículo?")
-    prompt = prompt_chat(prompt)
+    # while prompt is None:
+    #     # pdb.set_trace()
+    #     return chat.send_message("Precisa de ajuda com currículo?")
+    message = prompt_chat(prompt)
     try:
-        response = chat.send_message(prompt)
-        return response.text
+        response = chat.send_message(message)
+        # return response.text
     except IndentationError as e:
         print(e)
         response = f"Não entendi o que você falou, pode tentar novamente? {e}"
         # pdb.set_trace()
-    return prompt_chat(prompt)
+    return response.text
 
     response = chat.send_message()
 

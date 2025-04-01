@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV=/home/jaederazevedo/Documentos/projetos/AI-python-gemini/gemini_resume
+VIRTUAL_ENV=/home/jaederazevedo/Documentos/python/AI-python-gemini/gemini_resume
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

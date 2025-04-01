@@ -4,10 +4,10 @@ def set_light_values(brigthness: int, color_temp: str) -> dict:
     return {"brigthness": brigthness, "temperatura": color_temp}
 
 
-def intruction_alert() -> str:
-    "Instrução para o usuário."
+def criador_peticao(tipo_peticao: str) -> dict:
+    "Poderia criando uma petição necessarios para agilizar o processo."
+    "petição deve ser com linguagem advogacia para tribunal"
+    return {"tipo_peticao": tipo_peticao}
 
-    return {"alert": "Olá, eu sou o assistente virtual, como posso te ajudar?"}
 
-
-__all__ = ["set_light_values", "instruction_alert"]
+__all__ = ["set_light_values", "criador_peticao"]

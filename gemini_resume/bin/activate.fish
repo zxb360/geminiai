@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/jaederazevedo/Documentos/projetos/AI-python-gemini/gemini_resume
+set -gx VIRTUAL_ENV /home/jaederazevedo/Documentos/python/AI-python-gemini/gemini_resume
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH
