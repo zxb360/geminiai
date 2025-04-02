@@ -1,7 +1,7 @@
 import google.generativeai as genai
 import os
 import gradio as gr
-from automatizando_home import set_light_values, criador_peticao
+from automatizando_home import get_agenda, criando_agenda
 # import pdb
 import time
 
@@ -13,25 +13,18 @@ os.environ["GEMINI_API_KEY"]  # trazendo a chave
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 initial_prompt = (
-    """Você é um advogado especializado em direito civil e penal.
-      Responda com precisão às perguntas jurídicas."""
-    "Você é um assistente virtual de advogado e sua função é ajudar."
-    "Por favor toda pergunta relacionada a direito advogacia"
-    "chame as funções preparadas para as respostas"
+    """Você é uma secretaria que define informações do dia a dia
+    do seu chefe, ele vai te informar dia e data para você armazena no
+    caledario na função criando_agenda"""
+    "mantenha dentro do contexto para ajudar usuario a organizar o trabalho"
     )
 
 model = genai.GenerativeModel(
             model_name='gemini-1.5-flash',
             system_instruction=initial_prompt,
-            tools=[set_light_values, criador_peticao],
+            tools=[get_agenda, criando_agenda],
     )
-chat = model.start_chat(
-    history=[{
-                "role": "system",
-                "parts": [{"text": "Você é um advogado"}]
-            }],
-    enable_automatic_function_calling=True,
-    )
+chat = model.start_chat(enable_automatic_function_calling=True)
 
 # De acordo com exercicio é quebra o problema em partes
 

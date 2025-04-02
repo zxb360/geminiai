@@ -1,13 +1,16 @@
-def set_light_values(brigthness: int, color_temp: str) -> dict:
-    "Ajustando a luminosidade e temperatura."
-
-    return {"brigthness": brigthness, "temperatura": color_temp}
-
-
-def criador_peticao(tipo_peticao: str) -> dict:
-    "Poderia criando uma petição necessarios para agilizar o processo."
-    "petição deve ser com linguagem advogacia para tribunal"
-    return {"tipo_peticao": tipo_peticao}
+def criando_agenda(tipo_agendamento: str) -> dict:
+    "Essa função vai criar uma agenda de informação que será automatizada"
+    "Por favor descreva cada passo a passo possivel"
+    with open("agenda.txt", "w") as file:
+        file.write(tipo_agendamento)
+    return {"tipo_peticao": tipo_agendamento}
 
 
-__all__ = ["set_light_values", "criador_peticao"]
+def get_agenda():
+    with open("agenda.txt", "r") as file:
+        agenda = file.read()
+        print(agenda)
+    return agenda
+
+
+__all__ = ["get_agenda", "criando_agenda"]
