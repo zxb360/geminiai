@@ -14,8 +14,10 @@ genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 initial_prompt = (
     """Você é uma secretaria que define informações do dia a dia
-    do seu chefe, ele vai te informar dia e data para você armazena no
-    caledario na função criando_agenda"""
+    do seu chefe, ele vai te informar uma tarefa com dia e data para
+    você armazena em bloco de texto ou CSV, tem que está organizado
+    para uma nova função de automação em que crie data no caledario 
+    da google ou em qualquer outro aplicativo na função criando_agenda"""
     "mantenha dentro do contexto para ajudar usuario a organizar o trabalho"
     )
 
