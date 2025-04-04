@@ -17,7 +17,7 @@ def criando_agenda(eventos: str, data: str, hora: str, local: str) -> dict:
         if not existe_arquivo:
             write.writerow(tipo_agendamento)
 
-        write.writerow(['Eventos', 'Data', 'Hora', 'Local'])
+        write.writerow(tipo_agendamento)
         write.writerow([eventos, data, hora, local])
 
     return {"Eventos Registrados": tipo_agendamento}
